@@ -5,6 +5,21 @@ plugins {
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
 
+task sourceJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives sourceJar
+    archives javadocJar
+}
+
 task wrapper(type: Wrapper) {
     gradleVersion = '4.3.1'
 }
