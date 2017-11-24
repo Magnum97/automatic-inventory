@@ -1,0 +1,51 @@
+# Gradle
+# ------
+.gradle
+build/
+/local.properties
+gradle-app.setting
+
+# IDEA
+# ----
+.idea
+.shelf
+/*.iml
+/*.ipr
+/*.iws
+/out
+
+# Eclipse
+# -------
+/bin
+*.classpath
+*.project
+*.settings
+atlassian-ide-plugin.xml
+
+# NetBeans
+# --------
+dist/
+.nb-gradle
+.nb-gradle-properties
+
+# Windows
+# -------
+*.stackdump
+*.lnk
+Desktop.ini
+Thumbs.db
+ehthumbs.db
+ehthumbs_vista.db
+*.cab
+*.msi
+*.msm
+*.msp
+$RECYCLE.BIN/
+
+# OS X
+# ----
+.DS_Store
+
+# Logs
+# ----
+*.log
