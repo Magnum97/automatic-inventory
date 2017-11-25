@@ -1,0 +1,6 @@
+name: AutomaticInventory
+main: com.neolumia.autoinventory.AutoPlugin
+version: ${version}
+
+author: Neolumia
+website: https://neolumia.com/
