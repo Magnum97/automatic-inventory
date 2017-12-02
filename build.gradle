@@ -1,41 +1,45 @@
 plugins {
-    id 'java'
+  id 'java'
 }
 
-version = '1.0-SNAPSHOT'
+group = 'com.neolumia'
+version = '1.0.0'
 
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
 
 repositories {
-    mavenCentral()
-    maven { url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
-    maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
+  mavenCentral()
+  maven { url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
+  maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
 }
 
 dependencies {
-    compileOnly group: 'org.bukkit', name: 'bukkit', version: '1.8-R0.1-SNAPSHOT'
+  compileOnly group: 'org.bukkit', name: 'bukkit', version: '1.8-R0.1-SNAPSHOT'
 }
 
 processResources {
   expand(version: version)
+  from 'LICENSE'
 }
 
 task sourceJar(type: Jar) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
+  classifier = 'sources'
+  from sourceSets.main.allSource
 }
 
 task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from javadoc.destinationDir
+  classifier = 'javadoc'
+  from javadoc.destinationDir
 }
 
 artifacts {
-    archives sourceJar
-    archives javadocJar
+  archives sourceJar
+  archives javadocJar
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '4.3.1'
+  gradleVersion = '4.3.1'
 }
+
+apply from: 'gradle/deploy.gradle'

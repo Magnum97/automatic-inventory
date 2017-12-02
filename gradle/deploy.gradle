@@ -1,0 +1,25 @@
+apply plugin: 'maven-publish'
+
+ext.isRelease = {
+  return !project.version.endsWith("-SNAPSHOT")
+}
+
+publishing {
+  repositories {
+    if (project.hasProperty("deployUrl")) {
+      maven {
+        credentials {
+          username = "${deployUser}"
+          password = "${deployPass}"
+        }
+        url = String.format("${deployUrl}", isRelease ? 'releases' : 'snapshots')
+      }
+    }
+  }
+
+  publications {
+    maven(MavenPublication) {
+      from components.java
+    }
+  }
+}
