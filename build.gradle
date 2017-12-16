@@ -2,6 +2,7 @@ plugins {
   id 'java'
   id 'idea'
   id 'eclipse'
+  id 'net.minecrell.licenser' version '0.3'
 }
 
 group = 'com.neolumia'
@@ -23,6 +24,12 @@ dependencies {
 processResources {
   expand(version: version)
   from 'LICENSE'
+}
+
+license {
+  header = file('HEADER.txt')
+  include '**/*.java'
+  newLine = true
 }
 
 task sourceJar(type: Jar) {
