@@ -25,9 +25,11 @@
 package com.neolumia.autoinventory;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
 import org.bukkit.entity.Player;
@@ -44,6 +46,8 @@ public final class AutoManager implements Listener {
   private static final int PLAYER_INVENTORY_START = 9;
   private static final int PLAYER_INVENTORY_END = 36;
 
+  private final Blacklist blacklist = new Blacklist();
+
   @EventHandler(priority = EventPriority.HIGH)
   public void onClose(InventoryCloseEvent event) {
     ifPlayerInventory(event.getView().getBottomInventory(), inventory -> {
@@ -52,8 +56,16 @@ public final class AutoManager implements Listener {
   }
 
   private void sort(Inventory inventory, int from, int to) {
+    final Map<Integer, ItemStack> blacklisted = new HashMap<>();
     final List<ItemStack> contents = copyOf(inventory, from, to);
+    for (int i = 0; i < contents.size(); i++) {
+      ItemStack item = contents.get(i);
+      if (item != null && blacklist.contains(item)) {
+        blacklisted.put(i, item);
+      }
+    }
     contents.removeIf(Objects::isNull);
+    contents.removeIf(blacklist::contains);
     contents.sort(SortModes.DEFAULT);
     ItemStack previous = null;
     final Iterator<ItemStack> iterator = contents.iterator();
@@ -74,9 +86,13 @@ public final class AutoManager implements Listener {
     }
     for (int i = 0; i < to; i++) {
       if (i >= contents.size()) {
-        inventory.clear(i + from);
-        continue;
+        contents.add(null);
       }
+    }
+    for (Map.Entry<Integer, ItemStack> item : blacklisted.entrySet()) {
+      contents.set(item.getKey(), item.getValue());
+    }
+    for (int i = 0; i < to; i++) {
       inventory.setItem(i + from, contents.get(i));
     }
   }
@@ -86,7 +102,8 @@ public final class AutoManager implements Listener {
   }
 
   private boolean canMerge(ItemStack to, ItemStack from) {
-    return to.isSimilar(from) && to.getAmount() < from.getMaxStackSize();
+    return !blacklist.contains(to) && !blacklist.contains(from) && to.isSimilar(from)
+      && to.getAmount() < from.getMaxStackSize();
   }
 
   private void ifPlayerInventory(Inventory inventory, Consumer<Inventory> consumer) {
