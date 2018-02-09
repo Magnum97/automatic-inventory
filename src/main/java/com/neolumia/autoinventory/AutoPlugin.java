@@ -24,15 +24,14 @@
 
 package com.neolumia.autoinventory;
 
-import org.bukkit.plugin.java.JavaPlugin;
+import com.neolumia.material.plugin.NeoJavaPlugin;
 
-public final class AutoPlugin extends JavaPlugin {
+public final class AutoPlugin extends NeoJavaPlugin {
 
   private final AutoManager manager = new AutoManager();
 
   @Override
-  public void onEnable() {
-    getServer().getPluginManager().registerEvents(manager, this);
-    getLogger().info("Plugin enabled");
+  protected void enable() {
+    register(manager);
   }
 }

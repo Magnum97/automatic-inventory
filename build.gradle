@@ -12,6 +12,7 @@ description = 'Automatic inventory sorting'
 ext {
   url = 'https://neolumia.com/'
   bukkitVersion = '1.12.2-R0.1-SNAPSHOT'
+  materialVersion = '1.0.15'
 }
 
 sourceCompatibility = '1.8'
@@ -27,6 +28,9 @@ repositories {
 dependencies {
   compileOnly group: 'org.spigotmc', name: 'spigot-api', version: bukkitVersion
   testCompile group: 'org.spigotmc', name: 'spigot-api', version: bukkitVersion
+
+  compileOnly group: 'com.neolumia', name: 'material-api', version: materialVersion
+  testCompile group: 'com.neolumia', name: 'material-api', version: materialVersion
 }
 
 task sourceJar(type: Jar) {
