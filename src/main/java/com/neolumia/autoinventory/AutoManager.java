@@ -47,7 +47,11 @@ public final class AutoManager implements Listener {
   private static final int PLAYER_INVENTORY_START = 9;
   private static final int PLAYER_INVENTORY_END = 36;
 
-  private final Blacklist blacklist = new Blacklist();
+  private final Blacklist blacklist;
+
+  AutoManager(Blacklist blacklist) {
+    this.blacklist = blacklist;
+  }
 
   @EventHandler(priority = EventPriority.HIGH)
   public void onClose(InventoryCloseEvent event) {

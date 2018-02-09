@@ -24,14 +24,39 @@
 
 package com.neolumia.autoinventory;
 
+import com.neolumia.material.config.GsonConfig;
 import com.neolumia.material.plugin.NeoJavaPlugin;
+import org.bukkit.Material;
+
+import java.util.logging.Level;
 
 public final class AutoPlugin extends NeoJavaPlugin {
 
-  private final AutoManager manager = new AutoManager();
+  private GsonConfig<Blacklist> blacklist;
+  private AutoManager manager;
 
   @Override
   protected void enable() {
-    register(manager);
+    blacklist = new GsonConfig<>(getRoot().resolve("blacklist.json"), Blacklist.class);
+    manager = register(new AutoManager(blacklist.getConfig()));
+  }
+
+  @Override
+  protected void disable() {
+    if (blacklist != null) {
+      try {
+        blacklist.save();
+      } catch (Exception ex) {
+        getLogger().log(Level.WARNING, "Blacklist could not be saved", ex);
+      }
+    }
+  }
+
+  public GsonConfig<Blacklist> getBlacklist() {
+    return blacklist;
+  }
+
+  public AutoManager getManager() {
+    return manager;
   }
 }
