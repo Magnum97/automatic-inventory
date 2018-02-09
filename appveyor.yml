@@ -1,0 +1,24 @@
+environment:
+  matrix:
+    - JAVA_HOME: C:\Program Files\Java\jdk1.8.0
+    - JAVA_HOME: C:\Program Files (x86)\Java\jdk1.8.0
+
+skip_tags: true
+version: "{branch} {build}"
+
+install:
+  - cmd: echo %JAVA_HOME%
+
+build_script:
+  - gradlew.bat assemble
+
+test_script:
+  - gradlew.bat check
+
+branches:
+  except:
+    - gh-pages
+
+cache:
+  - .gradle
+  - C:\Users\appveyor\.gradle
