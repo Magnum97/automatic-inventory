@@ -6,7 +6,13 @@ plugins {
 }
 
 group = 'com.neolumia'
-version = '1.1'
+version = '1.1.1'
+description = 'Automatic inventory sorting'
+
+ext {
+  url = 'https://neolumia.com/'
+  bukkitVersion = '1.12.2-R0.1-SNAPSHOT'
+}
 
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
@@ -15,21 +21,12 @@ repositories {
   mavenCentral()
   maven { url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
   maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
+  maven { url 'https://neolumia-187016.appspot.com/' }
 }
 
 dependencies {
-  compileOnly group: 'org.bukkit', name: 'bukkit', version: '1.8-R0.1-SNAPSHOT'
-}
-
-processResources {
-  expand(version: version)
-  from 'LICENSE'
-}
-
-license {
-  header = file('HEADER.txt')
-  include '**/*.java'
-  newLine = true
+  compileOnly group: 'org.spigotmc', name: 'spigot-api', version: bukkitVersion
+  testCompile group: 'org.spigotmc', name: 'spigot-api', version: bukkitVersion
 }
 
 task sourceJar(type: Jar) {
@@ -45,6 +42,17 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 artifacts {
   archives sourceJar
   archives javadocJar
+}
+
+processResources {
+  expand(version: version)
+  from 'LICENSE'
+}
+
+license {
+  header = file('HEADER.txt')
+  include '**/*.java'
+  newLine = true
 }
 
 task wrapper(type: Wrapper) {
