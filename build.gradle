@@ -63,4 +63,8 @@ task wrapper(type: Wrapper) {
   gradleVersion = '4.5.1'
 }
 
+if(project.hasProperty('cleanFiles')) {
+  jar.archiveName = 'AutomaticInventory.jar'
+}
+
 apply from: 'gradle/publish.gradle'

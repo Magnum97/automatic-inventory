@@ -5,7 +5,7 @@ jdk:
   - oraclejdk8
   - oraclejdk9
 
-script: "./gradlew build"
+script: "./gradlew build -PcleanFiles=true"
 
 branches:
   except:
@@ -16,8 +16,7 @@ deploy:
   api_key:
     secure: "xy2FvPw+sUPK7vXBjy79j3brmTcW8ZnEsx6teOJFMtr84QYYzanhWqaY+9bxmDkKrzS6HgAQCyI5KQSEzpZ4+gh3tT4s7eZkYFPmKhgG+U+yn28tyg+PK1CrVgaOo+HGcWUNQlLmr/+YyMrJY2vYLA0hp7mSeq0QhhxgkZ0LPspFyGbAA7VlADOh2JXAn8mXeP4Rv8aT/ICICFVHsKY6Xx+WzgR1ooOCNgZ+XtL3fJk32TWtp6UOof8qnn0jO9rOKaHRmneYotfeGHFeUik+jq1RtC63Lhizp2Jx7l89+/FaoO6CEo3iBIwkbABRGjMrWkZlpU3J69LphYXutaGHXzi4BudSBbWGFJrmwTduNDYXfNTUhwLURxCd2tcyiFzrdSUcvjTU22IeX8mNjIlrZBMt2BDW24sKXEQkgeRZwCDDzbenJpqkDSMkdVhA+2ELF+zxLC5F4gX955+yFfzvFR8y3cUDBn8wTDOGgt1QMq9jKY9ep/qnRX3e1y8IbdMEii9z/o67s7YE939Dpkj9JxVPqeJwclTJofeJxn3yNPDYmmFX/cwGQOhK03aibVdIgo6iwbHZ6PzAL4rWZr9FYZ0se9N5Xcjb2T10GN0YKn1oVMYGYJWB6YDh7GFl8CqYnTG0Z+LT0iK/nc+gklacf6mlC6vYiaUyaSabXAFl7ZE="
   skip_cleanup: true
-  file_glob: true
-  file: "build/libs/*.jar"
+  file: "build/libs/AutomaticInventory.jar"
   on:
     branch: master
     repo: neolumia/automatic-inventory
