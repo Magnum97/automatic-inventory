@@ -49,7 +49,7 @@ artifacts {
 }
 
 processResources {
-  expand(version: version)
+  expand(version: project.version, description: project.description)
   from 'LICENSE'
 }
 
