@@ -22,25 +22,22 @@
  * SOFTWARE.
  */
 
-package com.neolumia.autoinventory;
+package com.neolumia.autoinventory.blacklist;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import ninja.leaping.configurate.objectmapping.Setting;
 import ninja.leaping.configurate.objectmapping.serialize.ConfigSerializable;
 import org.bukkit.inventory.ItemStack;
-
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @ConfigSerializable
 public final class Blacklist {
 
   @Setting(value = "items")
-  private List<Item> items = Lists.newArrayList();
+  private List<BlacklistItem> items = new ArrayList<>();
 
   public boolean contains(ItemStack item) {
-    for (Item check : items) {
+    for (BlacklistItem check : items) {
       if (check.applies(item)) {
         return true;
       }
@@ -48,55 +45,7 @@ public final class Blacklist {
     return false;
   }
 
-  public void add(Item item) {
+  public void add(BlacklistItem item) {
     items.add(item);
-  }
-
-  @ConfigSerializable
-  public static class Item {
-
-    @Setting("conditions")
-    private Map<ConditionType, String> conditions = Maps.newHashMap();
-
-    boolean applies(ItemStack item) {
-      for (Map.Entry<ConditionType, String> entry : conditions.entrySet()) {
-        if (!doesApply(entry.getKey(), entry.getValue(), item)) {
-          return false;
-        }
-      }
-      return true;
-    }
-
-    private boolean doesApply(ConditionType type, String value, ItemStack item) {
-      switch (type) {
-        case NAME:
-          if (!item.getItemMeta().getDisplayName().equalsIgnoreCase(value)) {
-            return false;
-          }
-          break;
-        case AMOUNT:
-          if (item.getAmount() != Integer.valueOf(value)) {
-            return false;
-          }
-          break;
-        case MATERIAL:
-          if (!item.getType().name().equalsIgnoreCase(value)) {
-            return false;
-          }
-          break;
-      }
-      return true;
-    }
-
-    public void put(ConditionType type, String value) {
-      conditions.put(type, value);
-    }
-  }
-
-  public enum ConditionType {
-
-    MATERIAL,
-    AMOUNT,
-    NAME
   }
 }

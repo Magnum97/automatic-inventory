@@ -24,39 +24,67 @@
 
 package com.neolumia.autoinventory;
 
-import com.neolumia.material.config.GsonConfig;
+import com.neolumia.autoinventory.blacklist.BlacklistHandler;
 import com.neolumia.material.plugin.NeoJavaPlugin;
-import org.bukkit.Material;
+import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
+import java.util.Arrays;
 import java.util.logging.Level;
 
 public final class AutoPlugin extends NeoJavaPlugin {
 
-  private GsonConfig<Blacklist> blacklist;
   private AutoManager manager;
+  private BlacklistHandler blacklist;
 
   @Override
   protected void enable() {
-    blacklist = new GsonConfig<>(getRoot().resolve("blacklist.json"), Blacklist.class);
-    manager = register(new AutoManager(blacklist.getConfig()));
+    blacklist = register(new BlacklistHandler(this));
+    manager = register(new AutoManager(this));
   }
 
   @Override
   protected void disable() {
     if (blacklist != null) {
       try {
-        blacklist.save();
+        blacklist.saveBlacklist();
       } catch (Exception ex) {
         getLogger().log(Level.WARNING, "Blacklist could not be saved", ex);
       }
     }
   }
 
-  public GsonConfig<Blacklist> getBlacklist() {
-    return blacklist;
+  @Override
+  public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    if (command.getName().equalsIgnoreCase(getName())) {
+
+      if (args.length == 0) {
+        getServer().dispatchCommand(sender, "version " + getName());
+        return true;
+      }
+
+      if (args[0].equalsIgnoreCase("blacklist")) {
+        if (!(sender instanceof Player)) {
+          sender.sendMessage(ChatColor.RED + "This command is only for players.");
+          return true;
+        }
+        blacklist.onCommand(sender, command, label, Arrays.copyOfRange(args, 1, args.length));
+        return true;
+      }
+
+      sender.sendMessage("/autoinv (help:blacklist)");
+      return true;
+    }
+    return false;
   }
 
   public AutoManager getManager() {
     return manager;
+  }
+
+  public BlacklistHandler getBlacklistHandler() {
+    return blacklist;
   }
 }

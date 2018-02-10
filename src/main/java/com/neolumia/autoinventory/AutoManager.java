@@ -47,17 +47,15 @@ public final class AutoManager implements Listener {
   private static final int PLAYER_INVENTORY_START = 9;
   private static final int PLAYER_INVENTORY_END = 36;
 
-  private final Blacklist blacklist;
+  private final AutoPlugin plugin;
 
-  AutoManager(Blacklist blacklist) {
-    this.blacklist = blacklist;
+  AutoManager(AutoPlugin plugin) {
+    this.plugin = plugin;
   }
 
   @EventHandler(priority = EventPriority.HIGH)
   public void onClose(InventoryCloseEvent event) {
-    ifPlayerInventory(event.getView().getBottomInventory(), inventory -> {
-      sort(inventory, PLAYER_INVENTORY_START, PLAYER_INVENTORY_END);
-    });
+    ifPlayerInventory(event.getView().getBottomInventory(), i -> sort(i, PLAYER_INVENTORY_START, PLAYER_INVENTORY_END));
   }
 
   private void sort(Inventory inventory, int from, int to) {
@@ -65,12 +63,12 @@ public final class AutoManager implements Listener {
     final List<ItemStack> contents = copyOf(inventory, from, to);
     for (int i = 0; i < contents.size(); i++) {
       ItemStack item = contents.get(i);
-      if (item != null && blacklist.contains(item)) {
+      if (item != null && plugin.getBlacklistHandler().getBlacklist().contains(item)) {
         blacklisted.put(i, item);
       }
     }
     contents.removeIf(Objects::isNull);
-    contents.removeIf(blacklist::contains);
+    contents.removeIf(i -> plugin.getBlacklistHandler().getBlacklist().contains(i));
     contents.sort(SortModes.DEFAULT);
     ItemStack previous = null;
     final Iterator<ItemStack> iterator = contents.iterator();
@@ -107,7 +105,9 @@ public final class AutoManager implements Listener {
   }
 
   private boolean canMerge(ItemStack to, ItemStack from) {
-    return !blacklist.contains(to) && !blacklist.contains(from) && to.isSimilar(from)
+    return !plugin.getBlacklistHandler().getBlacklist().contains(to)
+      && !plugin.getBlacklistHandler().getBlacklist().contains(from)
+      && to.isSimilar(from)
       && to.getAmount() < from.getMaxStackSize();
   }
 

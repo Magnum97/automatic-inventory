@@ -8,3 +8,9 @@ description: ${description}
 
 author: Neolumia
 website: https://neolumia.com/
+
+commands:
+  automaticinventory:
+    description: Main command for AutomaticInventory
+    usage: /<command>
+    aliases: [autoinv]

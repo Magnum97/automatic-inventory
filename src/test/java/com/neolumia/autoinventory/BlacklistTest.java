@@ -24,6 +24,9 @@
 
 package com.neolumia.autoinventory;
 
+import com.neolumia.autoinventory.blacklist.Blacklist;
+import com.neolumia.autoinventory.blacklist.BlacklistItem;
+import com.neolumia.autoinventory.blacklist.Conditions;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.junit.After;
@@ -50,11 +53,11 @@ public final class BlacklistTest {
   @Test
   public void conditionMaterial() {
 
-    final Blacklist.Item dirt = new Blacklist.Item();
-    dirt.put(Blacklist.ConditionType.MATERIAL, "DIRT");
+    final BlacklistItem dirt = new BlacklistItem();
+    dirt.put(Conditions.MATERIAL, "DIRT");
 
-    final Blacklist.Item diamond = new Blacklist.Item();
-    diamond.put(Blacklist.ConditionType.MATERIAL, "DIAMOND");
+    final BlacklistItem diamond = new BlacklistItem();
+    diamond.put(Conditions.MATERIAL, "DIAMOND");
 
     assertTrue(dirt.applies(new ItemStack(Material.DIRT)));
     assertTrue(diamond.applies(new ItemStack(Material.DIAMOND)));
@@ -71,8 +74,8 @@ public final class BlacklistTest {
   @Test
   public void conditionAmount() {
 
-    final Blacklist.Item item = new Blacklist.Item();
-    item.put(Blacklist.ConditionType.AMOUNT, "1337");
+    final BlacklistItem item = new BlacklistItem();
+    item.put(Conditions.AMOUNT, "1337");
 
     assertTrue(item.applies(new ItemStack(Material.DIRT, 1337)));
     assertFalse(item.applies(new ItemStack(Material.DIRT)));
@@ -87,9 +90,9 @@ public final class BlacklistTest {
   public void conditionMixed() {
 
     // Gold Nugget with amount 4
-    final Blacklist.Item nugget = new Blacklist.Item();
-    nugget.put(Blacklist.ConditionType.MATERIAL, "GOLD_NUGGET");
-    nugget.put(Blacklist.ConditionType.AMOUNT, "4");
+    final BlacklistItem nugget = new BlacklistItem();
+    nugget.put(Conditions.MATERIAL, "GOLD_NUGGET");
+    nugget.put(Conditions.AMOUNT, "4");
 
     blacklist.add(nugget);
     assertTrue(blacklist.contains(new ItemStack(Material.GOLD_NUGGET, 4)));
