@@ -22,8 +22,17 @@
  * SOFTWARE.
  */
 
-package com.neolumia.autoinventory;
+package com.neolumia.autoinventory.modules;
 
+import com.neolumia.autoinventory.AutoPlugin;
+import com.neolumia.autoinventory.SortModes;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -33,24 +42,13 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
 
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-
-public final class AutoManager implements Listener {
+public final class Sorting extends Module {
 
   private static final int PLAYER_INVENTORY_START = 9;
   private static final int PLAYER_INVENTORY_END = 36;
 
-  private final AutoPlugin plugin;
-
-  AutoManager(AutoPlugin plugin) {
-    this.plugin = plugin;
+  public Sorting(AutoPlugin plugin) {
+    super(plugin);
   }
 
   @EventHandler(priority = EventPriority.HIGH)
@@ -63,12 +61,12 @@ public final class AutoManager implements Listener {
     final List<ItemStack> contents = copyOf(inventory, from, to);
     for (int i = 0; i < contents.size(); i++) {
       ItemStack item = contents.get(i);
-      if (item != null && plugin.getBlacklistHandler().getBlacklist().contains(item)) {
+      if (item != null && getBlacklist().contains(item)) {
         blacklisted.put(i, item);
       }
     }
     contents.removeIf(Objects::isNull);
-    contents.removeIf(i -> plugin.getBlacklistHandler().getBlacklist().contains(i));
+    contents.removeIf(i -> getBlacklist().contains(i));
     contents.sort(SortModes.DEFAULT);
     ItemStack previous = null;
     final Iterator<ItemStack> iterator = contents.iterator();
@@ -105,10 +103,7 @@ public final class AutoManager implements Listener {
   }
 
   private boolean canMerge(ItemStack to, ItemStack from) {
-    return !plugin.getBlacklistHandler().getBlacklist().contains(to)
-      && !plugin.getBlacklistHandler().getBlacklist().contains(from)
-      && to.isSimilar(from)
-      && to.getAmount() < from.getMaxStackSize();
+    return !getBlacklist().contains(to) && !getBlacklist().contains(from) && to.isSimilar(from) && to.getAmount() < from.getMaxStackSize();
   }
 
   private void ifPlayerInventory(Inventory inventory, Consumer<Inventory> consumer) {

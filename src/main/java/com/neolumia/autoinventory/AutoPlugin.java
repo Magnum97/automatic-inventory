@@ -25,6 +25,7 @@
 package com.neolumia.autoinventory;
 
 import com.neolumia.autoinventory.blacklist.BlacklistHandler;
+import com.neolumia.autoinventory.modules.Sorting;
 import com.neolumia.material.plugin.NeoJavaPlugin;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -36,13 +37,13 @@ import java.util.logging.Level;
 
 public final class AutoPlugin extends NeoJavaPlugin {
 
-  private AutoManager manager;
   private BlacklistHandler blacklist;
+  private Sorting sorting;
 
   @Override
   protected void enable() {
     blacklist = register(new BlacklistHandler(this));
-    manager = register(new AutoManager(this));
+    sorting = register(new Sorting(this));
   }
 
   @Override
@@ -80,8 +81,8 @@ public final class AutoPlugin extends NeoJavaPlugin {
     return false;
   }
 
-  public AutoManager getManager() {
-    return manager;
+  public Sorting getSorting() {
+    return sorting;
   }
 
   public BlacklistHandler getBlacklistHandler() {
