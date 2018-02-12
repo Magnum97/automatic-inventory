@@ -28,7 +28,11 @@ import com.neolumia.autoinventory.blacklist.BlacklistHandler;
 import com.neolumia.autoinventory.modules.Deposit;
 import com.neolumia.autoinventory.modules.Refill;
 import com.neolumia.autoinventory.modules.Sorting;
+import com.neolumia.material.config.GsonConfig;
+import com.neolumia.material.config.HoconConfig;
 import com.neolumia.material.plugin.NeoJavaPlugin;
+import java.io.IOException;
+import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -40,13 +44,18 @@ import java.util.logging.Level;
 public final class AutoPlugin extends NeoJavaPlugin {
 
   private BlacklistHandler blacklist;
+  private HoconConfig<AutoConfig> config;
+
   private Sorting sorting;
   private Refill refill;
   private Deposit deposit;
 
   @Override
-  protected void enable() {
+  protected void enable() throws IOException, ObjectMappingException {
     blacklist = register(new BlacklistHandler(this));
+
+    config = new HoconConfig<>(getRoot().resolve("plugin.conf"), null, AutoConfig.class);
+    config.save();
 
     sorting = new Sorting(this);
     refill = new Refill(this);
@@ -98,6 +107,10 @@ public final class AutoPlugin extends NeoJavaPlugin {
 
   public Sorting getSorting() {
     return sorting;
+  }
+
+  public AutoConfig getSettings() {
+    return config.getConfig();
   }
 
   public BlacklistHandler getBlacklistHandler() {

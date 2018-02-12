@@ -22,31 +22,36 @@
  * SOFTWARE.
  */
 
-package com.neolumia.autoinventory.modules;
+package com.neolumia.autoinventory;
 
-import com.neolumia.autoinventory.AutoConfig;
-import com.neolumia.autoinventory.AutoPlugin;
-import com.neolumia.autoinventory.blacklist.Blacklist;
-import org.bukkit.event.Listener;
+import com.neolumia.autoinventory.modules.Deposit;
+import ninja.leaping.configurate.objectmapping.Setting;
+import ninja.leaping.configurate.objectmapping.serialize.ConfigSerializable;
+import org.bukkit.event.inventory.InventoryType;
+import java.util.HashMap;
+import java.util.Map;
 
-abstract class Module implements Listener {
+@ConfigSerializable
+public final class AutoConfig {
 
-  private final AutoPlugin plugin;
+  @Setting("sort-enabled")
+  public Map<InventoryType, Boolean> sortEnabled = new HashMap<>();
 
-  Module(AutoPlugin plugin) {
-    this.plugin = plugin;
-    plugin.register(this);
+  @Setting("deposit-enabled")
+  public Map<Deposit.Modes, Boolean> depositEnabled = new HashMap<>();
+
+  @Setting("refill-enabled")
+  public boolean refillEnabled = true;
+
+  public AutoConfig() {
+    sortEnabled.putIfAbsent(InventoryType.CHEST, true);
+    sortEnabled.putIfAbsent(InventoryType.SHULKER_BOX, true);
+    sortEnabled.putIfAbsent(InventoryType.PLAYER, true);
+    depositEnabled.putIfAbsent(Deposit.Modes.SINGLE, true);
+    depositEnabled.putIfAbsent(Deposit.Modes.ALL, true);
   }
 
-  AutoPlugin getPlugin() {
-    return plugin;
-  }
-
-  AutoConfig getConfig() {
-    return getPlugin().getSettings();
-  }
-
-  Blacklist getBlacklist() {
-    return plugin.getBlacklistHandler().getBlacklist();
+  public boolean isSortingEnabled(InventoryType type) {
+    return sortEnabled.containsKey(type) && sortEnabled.get(type);
   }
 }

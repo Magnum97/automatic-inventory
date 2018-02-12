@@ -42,6 +42,7 @@ import org.bukkit.inventory.ItemStack;
 
 public final class Refill extends Module {
 
+  private static final String PERMISSION = "automaticinventory.refill";
   private static final int OFF_HAND_SLOT = 40;
   private static final long REFILL_DELAY = 1L;
 
@@ -63,6 +64,9 @@ public final class Refill extends Module {
     if (!isRightClick(event.getAction())) {
       return;
     }
+    if (!canRefill(event.getPlayer())) {
+      return;
+    }
     final ItemStack item = event.getItem().clone();
     final int slot = findHoldingSlot(event.getPlayer(), event.getHand());
     if (slot != -1) {
@@ -72,13 +76,12 @@ public final class Refill extends Module {
 
   @EventHandler(priority = EventPriority.MONITOR)
   public void onConsume(PlayerItemConsumeEvent event) {
-    System.out.println("CONSUME: Starting..");
     if (!event.isCancelled() && !event.isAsynchronous() && event.getItem().getAmount() <= 1) {
-      System.out.println("CONSUME: Starting.. (2)");
-      int slot = findHoldingSlot(event.getPlayer(), event.getItem());
-      if (slot != -1) {
-        System.out.println("CONSUME: Refilling..");
-        run(() -> refill(event.getPlayer().getInventory(), event.getItem(), slot), null);
+      if (canRefill(event.getPlayer())) {
+        int slot = findHoldingSlot(event.getPlayer(), event.getItem());
+        if (slot != -1) {
+          run(() -> refill(event.getPlayer().getInventory(), event.getItem(), slot), null);
+        }
       }
     }
   }
@@ -86,22 +89,21 @@ public final class Refill extends Module {
   @EventHandler(priority = EventPriority.MONITOR)
   public void onItemBreak(PlayerItemBreakEvent event) {
     if (!event.isAsynchronous()) {
-      System.out.println("BREAK: Starting..");
+      if (!canRefill(event.getPlayer())) {
+        return;
+      }
       final ItemStack item = event.getBrokenItem().clone();
       int slot = findHoldingSlot(event.getPlayer(), event.getBrokenItem());
       if (slot != -1) {
-        System.out.println("BREAK: Refilling..");
         run(() -> refill(event.getPlayer().getInventory(), item, slot), null);
       }
     }
   }
 
-  @SuppressWarnings("deprecation")
   private void refill(Inventory inventory, ItemStack item, int slot) {
     checkNotNull(item, "Item cannot be null");
     checkArgument(slot >= 0 && slot < inventory.getSize(), "Invalid slot provided: " + slot);
     if (inventory.getItem(slot) != null) {
-      System.out.println("REFILL: Still there");
       return;
     }
     ItemStack best = null;
@@ -113,24 +115,23 @@ public final class Refill extends Module {
         continue;
       }
       final int points = shouldBeBest(item, search);
-      System.out.println("This: " + points + ", best: " + bestPoints);
       if (points > 0 && points >= bestPoints) {
         if (points == bestPoints && search.getAmount() < best.getAmount()) {
           continue;
         }
-        System.out.println("Switching..");
         best = search;
         bestSlot = i;
         bestPoints = points;
       }
     }
     if (best != null) {
-      System.out.println("Refilled.");
       inventory.clear(bestSlot);
       inventory.setItem(slot, best);
-    } else {
-      System.out.println("REFILL: Nothing found, aborting");
     }
+  }
+
+  private boolean canRefill(Player player) {
+    return player.hasPermission(PERMISSION) && getConfig().refillEnabled;
   }
 
   private int findHoldingSlot(Player player, EquipmentSlot slot) {

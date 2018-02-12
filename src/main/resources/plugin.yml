@@ -14,3 +14,11 @@ commands:
     description: Main command for AutomaticInventory
     usage: /<command>
     aliases: [autoinv]
+
+permissions:
+  automaticinventory.refill:
+    description: If the player is allowed to use AutoRefill
+    default: true
+  automaticinventory.sort:
+    description: If the player is allowed to use AutoSort
+    default: true

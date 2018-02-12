@@ -40,12 +40,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Consumer;
 
 public final class Sorting extends Module {
 
   private static final int PLAYER_INVENTORY_START = 9;
   private static final int PLAYER_INVENTORY_END = 36;
+  private static final String PERMISSION = "automaticinventory.sort";
 
   public Sorting(AutoPlugin plugin) {
     super(plugin);
@@ -53,7 +53,15 @@ public final class Sorting extends Module {
 
   @EventHandler(priority = EventPriority.HIGH)
   public void onClose(InventoryCloseEvent event) {
-    ifPlayerInventory(event.getView().getBottomInventory(), i -> sort(i, PLAYER_INVENTORY_START, PLAYER_INVENTORY_END));
+    if (!(event.getInventory().getHolder() instanceof Player)) {
+      return;
+    }
+    if (event.getInventory().getType() != InventoryType.PLAYER) {
+      return;
+    }
+    if (canSort((Player) event.getPlayer(), event.getInventory().getType())) {
+      sort(event.getInventory(), PLAYER_INVENTORY_START, PLAYER_INVENTORY_END);
+    }
   }
 
   private void sort(Inventory inventory, int from, int to) {
@@ -102,15 +110,11 @@ public final class Sorting extends Module {
     return new LinkedList<>(Arrays.asList(Arrays.copyOfRange(inventory.getContents(), from, to)));
   }
 
-  private boolean canMerge(ItemStack to, ItemStack from) {
-    return !getBlacklist().contains(to) && !getBlacklist().contains(from) && to.isSimilar(from) && to.getAmount() < from.getMaxStackSize();
+  private boolean canSort(Player player, InventoryType type) {
+    return (player.hasPermission(PERMISSION) || player.hasPermission(PERMISSION + "." + type.name())) && getConfig().isSortingEnabled(type);
   }
 
-  private void ifPlayerInventory(Inventory inventory, Consumer<Inventory> consumer) {
-    if (inventory != null && inventory.getHolder() instanceof Player) {
-      if (inventory.getType() == InventoryType.PLAYER) {
-        consumer.accept(inventory);
-      }
-    }
+  private boolean canMerge(ItemStack to, ItemStack from) {
+    return !getBlacklist().contains(to) && !getBlacklist().contains(from) && to.isSimilar(from) && to.getAmount() < from.getMaxStackSize();
   }
 }
