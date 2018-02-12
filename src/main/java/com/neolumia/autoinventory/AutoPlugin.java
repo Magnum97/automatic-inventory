@@ -25,6 +25,8 @@
 package com.neolumia.autoinventory;
 
 import com.neolumia.autoinventory.blacklist.BlacklistHandler;
+import com.neolumia.autoinventory.modules.Deposit;
+import com.neolumia.autoinventory.modules.Refill;
 import com.neolumia.autoinventory.modules.Sorting;
 import com.neolumia.material.plugin.NeoJavaPlugin;
 import org.bukkit.ChatColor;
@@ -39,11 +41,16 @@ public final class AutoPlugin extends NeoJavaPlugin {
 
   private BlacklistHandler blacklist;
   private Sorting sorting;
+  private Refill refill;
+  private Deposit deposit;
 
   @Override
   protected void enable() {
     blacklist = register(new BlacklistHandler(this));
-    sorting = register(new Sorting(this));
+
+    sorting = new Sorting(this);
+    refill = new Refill(this);
+    deposit = new Deposit(this);
   }
 
   @Override
@@ -79,6 +86,14 @@ public final class AutoPlugin extends NeoJavaPlugin {
       return true;
     }
     return false;
+  }
+
+  public Deposit getDeposit() {
+    return deposit;
+  }
+
+  public Refill getRefill() {
+    return refill;
   }
 
   public Sorting getSorting() {
