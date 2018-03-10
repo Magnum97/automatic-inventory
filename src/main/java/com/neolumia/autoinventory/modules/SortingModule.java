@@ -25,7 +25,7 @@
 package com.neolumia.autoinventory.modules;
 
 import com.neolumia.autoinventory.AutoPlugin;
-import com.neolumia.autoinventory.SortModes;
+import java.util.Comparator;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -75,7 +75,7 @@ public final class SortingModule extends Module {
     }
     contents.removeIf(Objects::isNull);
     contents.removeIf(i -> getBlacklist().contains(i));
-    contents.sort(SortModes.DEFAULT);
+    contents.sort(Mode.DEFAULT);
     ItemStack previous = null;
     final Iterator<ItemStack> iterator = contents.iterator();
     while (iterator.hasNext()) {
@@ -106,7 +106,7 @@ public final class SortingModule extends Module {
     }
   }
 
-  private List<ItemStack> copyOf(Inventory inventory, int from, int to) {
+  private static List<ItemStack> copyOf(Inventory inventory, int from, int to) {
     return new LinkedList<>(Arrays.asList(Arrays.copyOfRange(inventory.getContents(), from, to)));
   }
 
@@ -116,5 +116,28 @@ public final class SortingModule extends Module {
 
   private boolean canMerge(ItemStack to, ItemStack from) {
     return !getBlacklist().contains(to) && !getBlacklist().contains(from) && to.isSimilar(from) && to.getAmount() < from.getMaxStackSize();
+  }
+
+  interface IMode extends Comparator<ItemStack> {}
+
+  public enum Mode implements IMode {
+
+    DEFAULT {
+      @Override
+      @SuppressWarnings("deprecation")
+      public int compare(ItemStack o1, ItemStack o2) {
+        int c = Integer.compare(o1.getTypeId(), o2.getTypeId());
+        if (c == 0) {
+          c = Byte.compare(o1.getData().getData(), o2.getData().getData());
+          if (c == 0) {
+            c = Integer.compare(o1.getMaxStackSize(), o2.getMaxStackSize());
+            if (c == 0) {
+              c = Integer.compare(o2.getAmount(), o1.getAmount());
+            }
+          }
+        }
+        return c;
+      }
+    }
   }
 }

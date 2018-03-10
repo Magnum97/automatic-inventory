@@ -84,7 +84,7 @@ public final class DepositModule extends Module {
     }
   }
 
-  public interface Mode {
+  interface Mode {
 
     void deposit(PlayerInteractEvent event, Inventory player, Inventory chest);
   }
