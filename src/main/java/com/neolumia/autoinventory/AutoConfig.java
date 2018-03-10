@@ -34,19 +34,34 @@ import java.util.Map;
 @ConfigSerializable
 public final class AutoConfig {
 
-  @Setting("sort-enabled")
+  @Setting("debug")
+  public boolean debug = false;
+
+  @Setting(value = "sort-enabled", comment = "On what inventory types should AutoSort be allowed?")
   public Map<InventoryType, Boolean> sortEnabled = new HashMap<>();
 
-  @Setting("deposit-enabled")
+  @Setting(value = "sort-default", comment = "On what inventory types should AutoSort be enabled by default?")
+  public Map<InventoryType, Boolean> sortDefault = new HashMap<>();
+
+  @Setting(value = "deposit-enabled", comment = "Should QuickDeposit be allowed on this server?")
   public Map<Deposit.Modes, Boolean> depositEnabled = new HashMap<>();
 
-  @Setting("refill-enabled")
+  @Setting(value = "deposit-default", comment = "What is the default QuickDeposit mode? (SINGLE/ALL)")
+  public Deposit.Modes depositDefault = Deposit.Modes.SINGLE;
+
+  @Setting(value = "refill-enabled", comment = "Should AutoRefill be allowed on this server? (true/false)")
   public boolean refillEnabled = true;
+
+  @Setting(value = "refill-default", comment = "Should AutoRefill be enabled by default? (true/false)")
+  public boolean refillDefault = true;
 
   public AutoConfig() {
     sortEnabled.putIfAbsent(InventoryType.CHEST, true);
     sortEnabled.putIfAbsent(InventoryType.SHULKER_BOX, true);
     sortEnabled.putIfAbsent(InventoryType.PLAYER, true);
+    sortDefault.putIfAbsent(InventoryType.CHEST, true);
+    sortDefault.putIfAbsent(InventoryType.SHULKER_BOX, true);
+    sortDefault.putIfAbsent(InventoryType.PLAYER, true);
     depositEnabled.putIfAbsent(Deposit.Modes.SINGLE, true);
     depositEnabled.putIfAbsent(Deposit.Modes.ALL, true);
   }

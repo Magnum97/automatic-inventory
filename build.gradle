@@ -12,7 +12,6 @@ description = 'Automatic inventory sorting'
 ext {
   url = 'https://neolumia.com/'
   bukkitVersion = '1.12.2-R0.1-SNAPSHOT'
-  materialVersion = '1.0.16'
 }
 
 sourceCompatibility = '1.8'
@@ -22,15 +21,14 @@ repositories {
   mavenCentral()
   maven { url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
   maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
-  maven { url 'https://neolumia-187016.appspot.com/' }
+  maven { url 'https://jitpack.io' }
 }
 
 dependencies {
   compileOnly group: 'org.spigotmc', name: 'spigot-api', version: bukkitVersion
   testCompile group: 'org.spigotmc', name: 'spigot-api', version: bukkitVersion
 
-  compileOnly group: 'com.neolumia', name: 'material-api', version: materialVersion
-  testCompile group: 'com.neolumia', name: 'material-api', version: materialVersion
+  compile 'com.github.neolumia.material:material-api:master-SNAPSHOT'
 }
 
 task sourceJar(type: Jar) {
