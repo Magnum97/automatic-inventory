@@ -41,13 +41,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public final class Sorting extends Module {
+public final class SortingModule extends Module {
 
   private static final int PLAYER_INVENTORY_START = 9;
   private static final int PLAYER_INVENTORY_END = 36;
   private static final String PERMISSION = "automaticinventory.sort";
 
-  public Sorting(AutoPlugin plugin) {
+  public SortingModule(AutoPlugin plugin) {
     super(plugin);
   }
 

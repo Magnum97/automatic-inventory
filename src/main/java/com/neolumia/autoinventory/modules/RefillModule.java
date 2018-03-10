@@ -40,13 +40,13 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-public final class Refill extends Module {
+public final class RefillModule extends Module {
 
   private static final String PERMISSION = "automaticinventory.refill";
   private static final int OFF_HAND_SLOT = 40;
   private static final long REFILL_DELAY = 1L;
 
-  public Refill(AutoPlugin plugin) {
+  public RefillModule(AutoPlugin plugin) {
     super(plugin);
   }
 

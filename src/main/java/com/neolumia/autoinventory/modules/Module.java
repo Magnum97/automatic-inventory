@@ -35,7 +35,6 @@ abstract class Module implements Listener {
 
   Module(AutoPlugin plugin) {
     this.plugin = plugin;
-    plugin.register(this);
   }
 
   AutoPlugin getPlugin() {

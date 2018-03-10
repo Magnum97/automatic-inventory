@@ -25,10 +25,9 @@
 package com.neolumia.autoinventory;
 
 import com.neolumia.autoinventory.blacklist.BlacklistHandler;
-import com.neolumia.autoinventory.modules.Deposit;
-import com.neolumia.autoinventory.modules.Refill;
-import com.neolumia.autoinventory.modules.Sorting;
-import com.neolumia.material.config.GsonConfig;
+import com.neolumia.autoinventory.modules.DepositModule;
+import com.neolumia.autoinventory.modules.RefillModule;
+import com.neolumia.autoinventory.modules.SortingModule;
 import com.neolumia.material.config.HoconConfig;
 import com.neolumia.material.plugin.NeoJavaPlugin;
 import java.io.IOException;
@@ -46,9 +45,9 @@ public final class AutoPlugin extends NeoJavaPlugin {
   private BlacklistHandler blacklist;
   private HoconConfig<AutoConfig> config;
 
-  private Sorting sorting;
-  private Refill refill;
-  private Deposit deposit;
+  private final SortingModule sorting = new SortingModule(this);
+  private final RefillModule refill = new RefillModule(this);
+  private final DepositModule deposit = new DepositModule(this);
 
   @Override
   protected void enable() throws IOException, ObjectMappingException {
@@ -57,9 +56,9 @@ public final class AutoPlugin extends NeoJavaPlugin {
     config = new HoconConfig<>(getRoot().resolve("plugin.conf"), null, AutoConfig.class);
     config.save();
 
-    sorting = new Sorting(this);
-    refill = new Refill(this);
-    deposit = new Deposit(this);
+    register(sorting);
+    register(refill);
+    register(deposit);
   }
 
   @Override
@@ -97,15 +96,15 @@ public final class AutoPlugin extends NeoJavaPlugin {
     return false;
   }
 
-  public Deposit getDeposit() {
+  public DepositModule getDeposit() {
     return deposit;
   }
 
-  public Refill getRefill() {
+  public RefillModule getRefill() {
     return refill;
   }
 
-  public Sorting getSorting() {
+  public SortingModule getSorting() {
     return sorting;
   }
 

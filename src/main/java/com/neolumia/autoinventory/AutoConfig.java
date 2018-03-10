@@ -24,7 +24,7 @@
 
 package com.neolumia.autoinventory;
 
-import com.neolumia.autoinventory.modules.Deposit;
+import com.neolumia.autoinventory.modules.DepositModule;
 import ninja.leaping.configurate.objectmapping.Setting;
 import ninja.leaping.configurate.objectmapping.serialize.ConfigSerializable;
 import org.bukkit.event.inventory.InventoryType;
@@ -44,10 +44,10 @@ public final class AutoConfig {
   public Map<InventoryType, Boolean> sortDefault = new HashMap<>();
 
   @Setting(value = "deposit-enabled", comment = "Should QuickDeposit be allowed on this server?")
-  public Map<Deposit.Modes, Boolean> depositEnabled = new HashMap<>();
+  public Map<DepositModule.Modes, Boolean> depositEnabled = new HashMap<>();
 
   @Setting(value = "deposit-default", comment = "What is the default QuickDeposit mode? (SINGLE/ALL)")
-  public Deposit.Modes depositDefault = Deposit.Modes.SINGLE;
+  public DepositModule.Modes depositDefault = DepositModule.Modes.SINGLE;
 
   @Setting(value = "refill-enabled", comment = "Should AutoRefill be allowed on this server? (true/false)")
   public boolean refillEnabled = true;
@@ -62,8 +62,8 @@ public final class AutoConfig {
     sortDefault.putIfAbsent(InventoryType.CHEST, true);
     sortDefault.putIfAbsent(InventoryType.SHULKER_BOX, true);
     sortDefault.putIfAbsent(InventoryType.PLAYER, true);
-    depositEnabled.putIfAbsent(Deposit.Modes.SINGLE, true);
-    depositEnabled.putIfAbsent(Deposit.Modes.ALL, true);
+    depositEnabled.putIfAbsent(DepositModule.Modes.SINGLE, true);
+    depositEnabled.putIfAbsent(DepositModule.Modes.ALL, true);
   }
 
   public boolean isSortingEnabled(InventoryType type) {

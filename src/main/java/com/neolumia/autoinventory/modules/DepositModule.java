@@ -39,9 +39,9 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import java.util.Map;
 
-public final class Deposit extends Module {
+public final class DepositModule extends Module {
 
-  public Deposit(AutoPlugin plugin) {
+  public DepositModule(AutoPlugin plugin) {
     super(plugin);
   }
 
