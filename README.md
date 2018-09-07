@@ -9,6 +9,4 @@ _AutomaticInventory_ is a plugin for Bukkit.
 - [Issues](https://github.com/neolumia/automatic-inventory/issues/)
 
 ## License
-Copyright (c) Neolumia. All rights reserved.
-
-This project is licensed under the MIT License. For more information see [LICENSE](https://github.com/neolumia/automatic-inventory/blob/master/LICENSE).
+[MIT](https://github.com/neolumia/automatic-inventory/blob/master/LICENSE) © Neolumia
