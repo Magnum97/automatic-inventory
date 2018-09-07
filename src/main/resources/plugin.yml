@@ -2,8 +2,6 @@ name: AutomaticInventory
 version: ${version}
 main: com.neolumia.autoinventory.AutoPlugin
 
-depend: [Material]
-
 description: ${description}
 
 author: Neolumia

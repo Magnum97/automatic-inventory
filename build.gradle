@@ -3,6 +3,7 @@ plugins {
   id 'idea'
   id 'eclipse'
   id 'net.minecrell.licenser' version '0.3'
+  id 'com.github.johnrengelman.shadow' version '2.0.4'
 }
 
 group = 'com.neolumia'
@@ -32,7 +33,10 @@ dependencies {
   compileOnly group: 'org.spigotmc', name: 'spigot-api', version: bukkitVersion
   testCompile group: 'org.spigotmc', name: 'spigot-api', version: bukkitVersion
 
-  compile 'com.github.neolumia.material:api:master-SNAPSHOT'
+  compile ('com.github.neolumia.configurate:configurate-hocon:4d119aa8558987159bd6276bb9dd979e12a0e822') {
+    exclude module: 'guava'
+    exclude module: 'checker-qual'
+  }
 }
 
 task sourceJar(type: Jar) {
@@ -60,6 +64,13 @@ license {
   include '**/*.java'
   newLine = true
 }
+
+shadowJar {
+  relocate 'ninja.leaping.configurate', 'com.neolumia.autoinventory.lib.configurate'
+  relocate 'com.typesafe.config', 'com.neolumia.autoinventory.lib.config'
+}
+
+build.dependsOn(shadowJar)
 
 task wrapper(type: Wrapper) {
   gradleVersion = '4.10'

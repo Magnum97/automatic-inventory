@@ -29,7 +29,7 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.RemovalCause;
 import com.google.common.cache.RemovalListener;
 import com.neolumia.autoinventory.AutoPlugin;
-import com.neolumia.material.config.GsonConfig;
+import ninja.leaping.configurate.hocon.HoconConfig;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -42,8 +42,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,6 +49,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import static java.util.concurrent.TimeUnit.SECONDS;
 
 public final class BlacklistHandler implements Listener, CommandExecutor {
 
@@ -64,10 +64,10 @@ public final class BlacklistHandler implements Listener, CommandExecutor {
       }
     }).expireAfterWrite(15, SECONDS).build();
 
-  private GsonConfig<Blacklist> blacklist;
+  private HoconConfig<Blacklist> blacklist;
 
   public BlacklistHandler(AutoPlugin plugin) {
-    blacklist = new GsonConfig<>(plugin.getRoot().resolve("blacklist.json"), Blacklist.class);
+    blacklist = new HoconConfig<>(plugin.getRoot().resolve("blacklist.json"), Blacklist.class);
   }
 
   @EventHandler(priority = EventPriority.HIGHEST)

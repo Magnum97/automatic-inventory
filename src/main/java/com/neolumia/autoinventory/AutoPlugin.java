@@ -28,19 +28,18 @@ import com.neolumia.autoinventory.blacklist.BlacklistHandler;
 import com.neolumia.autoinventory.modules.DepositModule;
 import com.neolumia.autoinventory.modules.RefillModule;
 import com.neolumia.autoinventory.modules.SortingModule;
-import com.neolumia.material.config.HoconConfig;
-import com.neolumia.material.plugin.NeoJavaPlugin;
-import java.io.IOException;
-import ninja.leaping.configurate.objectmapping.ObjectMappingException;
+import ninja.leaping.configurate.hocon.HoconConfig;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.logging.Level;
 
-public final class AutoPlugin extends NeoJavaPlugin {
+public final class AutoPlugin extends JavaPlugin {
 
   private BlacklistHandler blacklist;
   private HoconConfig<AutoConfig> config;
@@ -50,19 +49,25 @@ public final class AutoPlugin extends NeoJavaPlugin {
   private final DepositModule deposit = new DepositModule(this);
 
   @Override
-  protected void enable() throws IOException, ObjectMappingException {
-    blacklist = register(new BlacklistHandler(this));
+  public void onEnable() {
+    try {
+      blacklist = new BlacklistHandler(this);
 
-    config = new HoconConfig<>(getRoot().resolve("plugin.conf"), null, AutoConfig.class);
-    config.save();
+      config = new HoconConfig<>(getRoot().resolve("plugin.conf"), null, AutoConfig.class);
+      config.save();
 
-    register(sorting);
-    register(refill);
-    register(deposit);
+      getServer().getPluginManager().registerEvents(blacklist, this);
+      getServer().getPluginManager().registerEvents(sorting, this);
+      getServer().getPluginManager().registerEvents(refill, this);
+      getServer().getPluginManager().registerEvents(deposit, this);
+    } catch (Throwable throwable) {
+      throwable.printStackTrace();
+      setEnabled(false);
+    }
   }
 
   @Override
-  protected void disable() {
+  public void onDisable() {
     if (blacklist != null) {
       try {
         blacklist.saveBlacklist();
@@ -114,5 +119,9 @@ public final class AutoPlugin extends NeoJavaPlugin {
 
   public BlacklistHandler getBlacklistHandler() {
     return blacklist;
+  }
+
+  public Path getRoot() {
+    return getDataFolder().toPath();
   }
 }

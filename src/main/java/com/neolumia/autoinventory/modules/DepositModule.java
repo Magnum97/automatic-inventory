@@ -25,8 +25,6 @@
 package com.neolumia.autoinventory.modules;
 
 import com.neolumia.autoinventory.AutoPlugin;
-import java.util.LinkedList;
-import java.util.List;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -37,6 +35,9 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 public final class DepositModule extends Module {
@@ -47,25 +48,44 @@ public final class DepositModule extends Module {
 
   @EventHandler(priority = EventPriority.MONITOR)
   public void onInteract(PlayerInteractEvent event) {
+
+    System.out.println("6");
+
     if (event.isAsynchronous() || event.isCancelled() || event instanceof FakePlayerInteractEvent) {
       return;
     }
+
+    System.out.println("5");
+
     if (event.getAction() != Action.LEFT_CLICK_BLOCK || !event.getPlayer().isSneaking() || event.getItem() == null) {
       return;
     }
+
+    System.out.println("4");
+
     if (isChest(event.getClickedBlock())) {
+
+      System.out.println("3");
+
       final Inventory inventory = ((InventoryHolder) event.getClickedBlock().getState()).getInventory();
 
       // Check if the player can open the chest
       if (event.getClickedBlock().getRelative(BlockFace.UP).getType().isOccluding()) {
         return;
       }
-      if (getPlugin().call(new FakePlayerInteractEvent(event)).isCancelled()) {
+
+      System.out.println("2");
+
+      final FakePlayerInteractEvent fakeEvent = new FakePlayerInteractEvent(event);
+      getPlugin().getServer().getPluginManager().callEvent(fakeEvent);
+      if (fakeEvent.isCancelled()) {
         return;
       }
 
+      System.out.println("1");
+
       // Deposit
-      Modes.ALL.deposit(event, event.getPlayer().getInventory(), inventory);
+      Modes.SINGLE.deposit(event, event.getPlayer().getInventory(), inventory);
     }
   }
 
@@ -116,7 +136,7 @@ public final class DepositModule extends Module {
           }
 
           // This should not happen
-          event.getPlayer().getInventory().addItem(rejected.values().toArray(new ItemStack[rejected.size()]));
+          event.getPlayer().getInventory().addItem(rejected.values().toArray(new ItemStack[0]));
         }
       }
     },
