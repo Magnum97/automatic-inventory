@@ -14,6 +14,10 @@ ext {
   bukkitVersion = '1.12.2-R0.1-SNAPSHOT'
 }
 
+if(project.hasProperty('cleanFiles')) {
+  jar.archiveName = 'AutomaticInventory.jar'
+}
+
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
 
@@ -28,7 +32,7 @@ dependencies {
   compileOnly group: 'org.spigotmc', name: 'spigot-api', version: bukkitVersion
   testCompile group: 'org.spigotmc', name: 'spigot-api', version: bukkitVersion
 
-  compile 'com.github.neolumia.material:material-api:master-SNAPSHOT'
+  compile 'com.github.neolumia.material:api:master-SNAPSHOT'
 }
 
 task sourceJar(type: Jar) {
@@ -58,11 +62,7 @@ license {
 }
 
 task wrapper(type: Wrapper) {
-  gradleVersion = '4.5.1'
-}
-
-if(project.hasProperty('cleanFiles')) {
-  jar.archiveName = 'AutomaticInventory.jar'
+  gradleVersion = '4.10'
 }
 
 apply from: 'gradle/publish.gradle'
