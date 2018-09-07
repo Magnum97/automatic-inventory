@@ -28,7 +28,7 @@ dependencies {
   compileOnly group: 'org.spigotmc', name: 'spigot-api', version: bukkitVersion
   testCompile group: 'org.spigotmc', name: 'spigot-api', version: bukkitVersion
 
-  compile 'com.github.neolumia.material:material-api:master-SNAPSHOT'
+  compile 'com.github.neolumia.material:api:master-SNAPSHOT'
 }
 
 task sourceJar(type: Jar) {
