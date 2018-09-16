@@ -22,30 +22,27 @@
  * SOFTWARE.
  */
 
-package com.neolumia.autoinventory.modules;
+package com.neolumia.autoinventory.config;
 
-import com.neolumia.autoinventory.config.AutoConfig;
-import com.neolumia.autoinventory.AutoPlugin;
-import com.neolumia.autoinventory.blacklist.Blacklist;
-import org.bukkit.event.Listener;
+import com.neolumia.autoinventory.modules.DepositModule;
+import com.neolumia.autoinventory.modules.DepositModule.Modes;
+import ninja.leaping.configurate.objectmapping.Setting;
+import ninja.leaping.configurate.objectmapping.serialize.ConfigSerializable;
 
-abstract class Module implements Listener {
+import java.util.HashMap;
+import java.util.Map;
 
-  private final AutoPlugin plugin;
+@ConfigSerializable
+public final class DepositCategory {
 
-  Module(AutoPlugin plugin) {
-    this.plugin = plugin;
-  }
+  @Setting(value = "enabled", comment = "What QuickDeposit types should be enabled?")
+  public Map<Modes, Boolean> enabled = new HashMap<>();
 
-  AutoPlugin getPlugin() {
-    return plugin;
-  }
+  @Setting(value = "default", comment = "What is the default QuickDeposit mode? (SINGLE/ALL)")
+  public DepositModule.Modes defaultMode = DepositModule.Modes.SINGLE;
 
-  AutoConfig getConfig() {
-    return getPlugin().getSettings();
-  }
-
-  Blacklist getBlacklist() {
-    return plugin.getBlacklistHandler().getBlacklist();
+  public DepositCategory() {
+    enabled.putIfAbsent(DepositModule.Modes.ALL, true);
+    enabled.putIfAbsent(DepositModule.Modes.SINGLE, true);
   }
 }

@@ -25,6 +25,7 @@
 package com.neolumia.autoinventory;
 
 import com.neolumia.autoinventory.blacklist.BlacklistHandler;
+import com.neolumia.autoinventory.config.AutoConfig;
 import com.neolumia.autoinventory.modules.DepositModule;
 import com.neolumia.autoinventory.modules.RefillModule;
 import com.neolumia.autoinventory.modules.SortingModule;
@@ -53,7 +54,7 @@ public final class AutoPlugin extends JavaPlugin {
     try {
       blacklist = new BlacklistHandler(this);
 
-      config = new HoconConfig<>(getRoot().resolve("plugin.conf"), null, AutoConfig.class);
+      config = new HoconConfig<>(getRoot().resolve("plugin.conf"), "auto-config", AutoConfig.class);
       config.save();
 
       getServer().getPluginManager().registerEvents(blacklist, this);

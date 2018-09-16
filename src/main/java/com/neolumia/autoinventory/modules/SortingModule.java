@@ -25,7 +25,9 @@
 package com.neolumia.autoinventory.modules;
 
 import com.neolumia.autoinventory.AutoPlugin;
+
 import java.util.Comparator;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -33,6 +35,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -123,10 +126,11 @@ public final class SortingModule extends Module {
   public enum Mode implements IMode {
 
     DEFAULT {
+
       @Override
       @SuppressWarnings("deprecation")
       public int compare(ItemStack o1, ItemStack o2) {
-        int c = Integer.compare(o1.getTypeId(), o2.getTypeId());
+        int c = Integer.compare(o1.getType().getId(), o2.getType().getId());
         if (c == 0) {
           c = Byte.compare(o1.getData().getData(), o2.getData().getData());
           if (c == 0) {
