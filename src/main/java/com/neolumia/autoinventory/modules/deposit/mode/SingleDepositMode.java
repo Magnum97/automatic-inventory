@@ -22,26 +22,40 @@
  * SOFTWARE.
  */
 
-package com.neolumia.autoinventory.config;
+package com.neolumia.autoinventory.modules.deposit.mode;
 
 import com.neolumia.autoinventory.modules.deposit.DepositMode;
-import ninja.leaping.configurate.objectmapping.Setting;
-import ninja.leaping.configurate.objectmapping.serialize.ConfigSerializable;
+import com.neolumia.autoinventory.modules.deposit.DepositModule;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
-import java.util.HashMap;
 import java.util.Map;
 
-@ConfigSerializable
-public final class DepositCategory {
+public final class SingleDepositMode implements DepositMode {
 
-  @Setting(value = "enabled", comment = "What QuickDeposit types should be enabled?")
-  public Map<DepositMode, Boolean> enabled = new HashMap<>();
+  @Override
+  public void deposit(DepositModule module, PlayerInteractEvent event, Inventory player, Inventory chest) {
+    final int slot = event.getPlayer().getInventory().getHeldItemSlot();
+    final ItemStack item = event.getItem().clone();
 
-  @Setting(value = "default", comment = "What is the default QuickDeposit mode? (SINGLE/ALL)")
-  public DepositMode defaultMode = DepositMode.SINGLE;
+    if (!event.getPlayer().getInventory().getItem(slot).equals(event.getItem())) {
+      module.getLogger().warning("Something unexpected happened: deposit item on wrong slot");
+      return;
+    }
 
-  public DepositCategory() {
-    enabled.putIfAbsent(DepositMode.ALL, true);
-    enabled.putIfAbsent(DepositMode.SINGLE, true);
+    event.getPlayer().getInventory().clear(slot);
+    Map<Integer, ItemStack> rejected = chest.addItem(item);
+
+    if (rejected != null && !rejected.isEmpty()) {
+
+      if (rejected.size() == 1) {
+        event.getPlayer().getInventory().setItem(slot, rejected.get(0));
+        return;
+      }
+
+      // This should not happen
+      event.getPlayer().getInventory().addItem(rejected.values().toArray(new ItemStack[0]));
+    }
   }
 }

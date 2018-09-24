@@ -22,26 +22,18 @@
  * SOFTWARE.
  */
 
-package com.neolumia.autoinventory.config;
+package com.neolumia.autoinventory.modules.deposit;
 
-import com.neolumia.autoinventory.modules.deposit.DepositMode;
-import ninja.leaping.configurate.objectmapping.Setting;
-import ninja.leaping.configurate.objectmapping.serialize.ConfigSerializable;
+import com.neolumia.autoinventory.modules.deposit.mode.AllDepositModule;
+import com.neolumia.autoinventory.modules.deposit.mode.SingleDepositMode;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.Inventory;
 
-import java.util.HashMap;
-import java.util.Map;
+public interface DepositMode {
 
-@ConfigSerializable
-public final class DepositCategory {
+  SingleDepositMode SINGLE = new SingleDepositMode();
 
-  @Setting(value = "enabled", comment = "What QuickDeposit types should be enabled?")
-  public Map<DepositMode, Boolean> enabled = new HashMap<>();
+  AllDepositModule ALL = new AllDepositModule();
 
-  @Setting(value = "default", comment = "What is the default QuickDeposit mode? (SINGLE/ALL)")
-  public DepositMode defaultMode = DepositMode.SINGLE;
-
-  public DepositCategory() {
-    enabled.putIfAbsent(DepositMode.ALL, true);
-    enabled.putIfAbsent(DepositMode.SINGLE, true);
-  }
+  void deposit(DepositModule module, PlayerInteractEvent event, Inventory player, Inventory chest);
 }

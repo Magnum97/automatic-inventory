@@ -24,9 +24,6 @@
 
 package com.neolumia.autoinventory.modules;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import com.neolumia.autoinventory.AutoPlugin;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -39,6 +36,9 @@ import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 public final class RefillModule extends Module {
 
@@ -160,9 +160,9 @@ public final class RefillModule extends Module {
 
   private void run(Runnable runnable, Long delay) {
     if (delay == null) {
-      getPlugin().getServer().getScheduler().runTask(getPlugin(), runnable);
+      plugin.getServer().getScheduler().runTask(plugin, runnable);
     } else {
-      getPlugin().getServer().getScheduler().runTaskLater(getPlugin(), runnable, delay);
+      plugin.getServer().getScheduler().runTaskLater(plugin, runnable, delay);
     }
   }
 

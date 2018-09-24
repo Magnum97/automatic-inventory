@@ -22,26 +22,37 @@
  * SOFTWARE.
  */
 
-package com.neolumia.autoinventory.config;
+package com.neolumia.autoinventory.modules.deposit.mode;
 
 import com.neolumia.autoinventory.modules.deposit.DepositMode;
-import ninja.leaping.configurate.objectmapping.Setting;
-import ninja.leaping.configurate.objectmapping.serialize.ConfigSerializable;
+import com.neolumia.autoinventory.modules.deposit.DepositModule;
+import org.bukkit.Material;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
-import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
-@ConfigSerializable
-public final class DepositCategory {
+//TODO This is completely untested
+public final class AllDepositModule implements DepositMode {
 
-  @Setting(value = "enabled", comment = "What QuickDeposit types should be enabled?")
-  public Map<DepositMode, Boolean> enabled = new HashMap<>();
-
-  @Setting(value = "default", comment = "What is the default QuickDeposit mode? (SINGLE/ALL)")
-  public DepositMode defaultMode = DepositMode.SINGLE;
-
-  public DepositCategory() {
-    enabled.putIfAbsent(DepositMode.ALL, true);
-    enabled.putIfAbsent(DepositMode.SINGLE, true);
+  @Override
+  public void deposit(DepositModule module, PlayerInteractEvent event, Inventory player, Inventory chest) {
+    int amount = 0;
+    List<ItemStack> list = new LinkedList<>();
+    for (int i = 9; i < 36; i++) {
+      final ItemStack item = player.getItem(i);
+      if (item != null && item.getType() != Material.AIR) {
+        player.clear(i);
+        list.add(item);
+        amount += item.getAmount();
+      }
+    }
+    Map<Integer, ItemStack> rejected = chest.addItem(list.toArray(new ItemStack[list.size()]));
+    if (rejected != null && !rejected.isEmpty()) {
+      player.addItem(rejected.values().toArray(new ItemStack[rejected.size()]));
+    }
   }
 }

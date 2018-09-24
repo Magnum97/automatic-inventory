@@ -24,35 +24,39 @@
 
 package com.neolumia.autoinventory.modules;
 
-import com.neolumia.autoinventory.AutoPlugin;
+import com.google.common.reflect.TypeToken;
+import ninja.leaping.configurate.ConfigurationNode;
+import ninja.leaping.configurate.objectmapping.ObjectMappingException;
+import ninja.leaping.configurate.objectmapping.serialize.TypeSerializer;
 
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Optional;
 
-public abstract class Module<T> extends AbstractModule {
+import static com.google.common.base.Preconditions.checkNotNull;
 
-  private final Map<String, T> container = new HashMap<>();
+public class ModuleSerializer<T, M extends Module<T>> implements TypeSerializer<T> {
 
-  protected Module(AutoPlugin plugin) {
-    super(plugin);
+  private final M module;
+
+  public ModuleSerializer(M mode) {
+    this.module = checkNotNull(mode);
   }
 
-  public void register(String id, T value) {
-    container.put(id.toLowerCase(Locale.ENGLISH), value);
+  @Override
+  public T deserialize(TypeToken<?> type, ConfigurationNode value) throws ObjectMappingException {
+    final String id = value.getString();
+    final Optional<T> mode = module.getValue(value.getString());
+    if (!mode.isPresent()) {
+      throw new ObjectMappingException("Module not registered: " + id);
+    }
+    return mode.get();
   }
 
-  public void unregister(String id) {
-    container.remove(id.toLowerCase(Locale.ENGLISH));
-  }
-
-  public Optional<String> getId(T module) {
-    return container.entrySet().stream().filter(e -> e.getValue().equals(module)).map(Entry::getKey).findAny();
-  }
-
-  public Optional<T> getValue(String id) {
-    return Optional.ofNullable(container.get(id.toLowerCase(Locale.ENGLISH)));
+  @Override
+  public void serialize(TypeToken<?> type, T obj, ConfigurationNode value) throws ObjectMappingException {
+    final Optional<String> id = module.getId(obj);
+    if (!id.isPresent()) {
+      throw new ObjectMappingException("Mode not registered: " + obj.getClass().getSimpleName());
+    }
+    value.setValue(id.get());
   }
 }
